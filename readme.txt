@@ -1,7 +1,7 @@
 === WB Deposits & Partial Payments for WooCommerce ===
 Contributors: wbcomdesigns
 Requires at least: 6.5
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 8.0
 Stable tag: 1.0.1
 License: GPLv2 or later
@@ -27,7 +27,7 @@ Core features:
 * Auto-cancel overdue balance orders (scheduled) and manual bulk cancel action.
 * WP-CLI command: `wp wbdpp cancel-overdue` (supports `--days`, `--limit`, `--dry-run`).
 * HPOS compatibility declaration.
-* Merchant onboarding guide: see `QUICK-START.md` inside the plugin folder.
+* Merchant onboarding guide: see `docs/QUICK-START.md` inside the plugin folder.
 
 == WP-CLI ==
 

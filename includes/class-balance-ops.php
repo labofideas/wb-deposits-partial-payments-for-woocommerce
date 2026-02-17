@@ -35,7 +35,8 @@ final class Balance_Ops {
 		$overdue_days = (int) apply_filters( 'wbdpp_overdue_days_threshold', $overdue_days, $args );
 		$threshold    = time() - ( $overdue_days * DAY_IN_SECONDS );
 
-		$query_args = array(
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to target overdue balance orders by linkage/due-date meta.
+			$query_args = array(
 			'limit'      => max( 1, (int) $args['limit'] ),
 			'return'     => 'objects',
 			'status'     => array( 'wc-pending', 'wc-on-hold', 'wc-failed' ),

@@ -107,7 +107,10 @@ final class Cart {
 		}
 
 		$rule         = Rules::resolve_for_product( $product );
-		$selected_raw = isset( $_POST['wbdpp_payment_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['wbdpp_payment_mode'] ) ) : 'full';
+		$selected_raw = filter_input( INPUT_POST, 'wbdpp_payment_mode', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( ! is_string( $selected_raw ) || '' === $selected_raw ) {
+			$selected_raw = 'full';
+		}
 		$selected     = Rules::sanitize_payment_mode( $selected_raw, $rule );
 
 		$cart_item_data['wbdpp_payment_mode'] = $selected;

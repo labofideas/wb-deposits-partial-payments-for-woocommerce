@@ -90,6 +90,7 @@ final class Admin_Reports {
 	 * @return array<int, WC_Order>
 	 */
 	private function get_outstanding_balance_orders(): array {
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required filter for balance-order linkage meta.
 		$query = new WC_Order_Query(
 			array(
 				'limit'      => 200,

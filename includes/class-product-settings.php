@@ -141,15 +141,23 @@ final class Product_Settings {
 	 * @return void
 	 */
 	public function save_product_fields( WC_Product $product ): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is intentionally performed below.
+		$nonce = isset( $_POST['woocommerce_meta_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ) : '';
+		if ( '' === $nonce || ! wp_verify_nonce( $nonce, 'woocommerce_save_data' ) ) {
+			return;
+		}
+
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		$product->update_meta_data( '_wbdpp_enable_rule', isset( $_POST['_wbdpp_enable_rule'] ) ? 'yes' : 'no' );
 		$product->update_meta_data( '_wbdpp_deposit_type', isset( $_POST['_wbdpp_deposit_type'] ) ? sanitize_text_field( wp_unslash( $_POST['_wbdpp_deposit_type'] ) ) : 'percentage' );
-		$product->update_meta_data( '_wbdpp_deposit_value', isset( $_POST['_wbdpp_deposit_value'] ) ? wc_format_decimal( wp_unslash( $_POST['_wbdpp_deposit_value'] ) ) : '' );
+		$product->update_meta_data( '_wbdpp_deposit_value', isset( $_POST['_wbdpp_deposit_value'] ) ? wc_format_decimal( sanitize_text_field( wp_unslash( $_POST['_wbdpp_deposit_value'] ) ) ) : '' );
 		$product->update_meta_data( '_wbdpp_payment_mode', isset( $_POST['_wbdpp_payment_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['_wbdpp_payment_mode'] ) ) : 'optional' );
 		$product->update_meta_data( '_wbdpp_due_type', isset( $_POST['_wbdpp_due_type'] ) ? sanitize_text_field( wp_unslash( $_POST['_wbdpp_due_type'] ) ) : '' );
 		$product->update_meta_data( '_wbdpp_due_fixed_date', isset( $_POST['_wbdpp_due_fixed_date'] ) ? sanitize_text_field( wp_unslash( $_POST['_wbdpp_due_fixed_date'] ) ) : '' );
 		$product->update_meta_data( '_wbdpp_due_relative', isset( $_POST['_wbdpp_due_relative'] ) ? absint( wp_unslash( $_POST['_wbdpp_due_relative'] ) ) : 0 );
 		$product->update_meta_data( '_wbdpp_refund_policy', isset( $_POST['_wbdpp_refund_policy'] ) ? sanitize_text_field( wp_unslash( $_POST['_wbdpp_refund_policy'] ) ) : '' );
-		$product->update_meta_data( '_wbdpp_refund_partial_percent', isset( $_POST['_wbdpp_refund_partial_percent'] ) ? wc_format_decimal( wp_unslash( $_POST['_wbdpp_refund_partial_percent'] ) ) : '' );
+		$product->update_meta_data( '_wbdpp_refund_partial_percent', isset( $_POST['_wbdpp_refund_partial_percent'] ) ? wc_format_decimal( sanitize_text_field( wp_unslash( $_POST['_wbdpp_refund_partial_percent'] ) ) ) : '' );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 
 	/**
@@ -158,6 +166,7 @@ final class Product_Settings {
 	 * @return void
 	 */
 	public function render_category_add_fields(): void {
+		wp_nonce_field( 'wbdpp_save_category_fields', 'wbdpp_category_fields_nonce' );
 		?>
 		<div class="form-field">
 			<label for="_wbdpp_enable_rule"><?php esc_html_e( 'Enable deposit rule', 'wb-deposits-partial-payments-for-woocommerce' ); ?></label>
@@ -207,6 +216,7 @@ final class Product_Settings {
 	 * @return void
 	 */
 	public function render_category_edit_fields( \WP_Term $term ): void {
+		wp_nonce_field( 'wbdpp_save_category_fields', 'wbdpp_category_fields_nonce' );
 		$enable_rule   = (string) get_term_meta( $term->term_id, '_wbdpp_enable_rule', true );
 		$deposit_type  = (string) get_term_meta( $term->term_id, '_wbdpp_deposit_type', true );
 		$deposit_value = (string) get_term_meta( $term->term_id, '_wbdpp_deposit_value', true );
@@ -270,6 +280,13 @@ final class Product_Settings {
 	 * @return void
 	 */
 	public function save_category_fields( int $term_id ): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is intentionally performed below.
+		$nonce = isset( $_POST['wbdpp_category_fields_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['wbdpp_category_fields_nonce'] ) ) : '';
+		if ( '' === $nonce || ! wp_verify_nonce( $nonce, 'wbdpp_save_category_fields' ) ) {
+			return;
+		}
+
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		if ( isset( $_POST['_wbdpp_enable_rule'] ) ) {
 			update_term_meta( $term_id, '_wbdpp_enable_rule', sanitize_text_field( wp_unslash( $_POST['_wbdpp_enable_rule'] ) ) );
 		}
@@ -279,7 +296,7 @@ final class Product_Settings {
 		}
 
 		if ( isset( $_POST['_wbdpp_deposit_value'] ) ) {
-			update_term_meta( $term_id, '_wbdpp_deposit_value', wc_format_decimal( wp_unslash( $_POST['_wbdpp_deposit_value'] ) ) );
+			update_term_meta( $term_id, '_wbdpp_deposit_value', wc_format_decimal( sanitize_text_field( wp_unslash( $_POST['_wbdpp_deposit_value'] ) ) ) );
 		}
 
 		if ( isset( $_POST['_wbdpp_payment_mode'] ) ) {
@@ -291,7 +308,8 @@ final class Product_Settings {
 		}
 
 		if ( isset( $_POST['_wbdpp_refund_partial_percent'] ) ) {
-			update_term_meta( $term_id, '_wbdpp_refund_partial_percent', wc_format_decimal( wp_unslash( $_POST['_wbdpp_refund_partial_percent'] ) ) );
+			update_term_meta( $term_id, '_wbdpp_refund_partial_percent', wc_format_decimal( sanitize_text_field( wp_unslash( $_POST['_wbdpp_refund_partial_percent'] ) ) ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 }

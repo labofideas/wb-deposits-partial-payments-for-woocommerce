@@ -147,6 +147,7 @@ final class Admin_Order {
 	 * @return void
 	 */
 	private function save_due_date( WC_Order $parent_order, WC_Order $balance_order ): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in handle_admin_action().
 		$due_raw = isset( $_POST['due_date'] ) ? sanitize_text_field( wp_unslash( $_POST['due_date'] ) ) : '';
 		if ( '' === $due_raw ) {
 			return;
@@ -189,6 +190,7 @@ final class Admin_Order {
 			return wc_get_order( (int) $post_or_order_object->ID );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only order screen query arg.
 		$order_id = isset( $_GET['id'] ) ? absint( wp_unslash( $_GET['id'] ) ) : 0;
 		if ( $order_id > 0 ) {
 			return wc_get_order( $order_id );
@@ -284,15 +286,18 @@ final class Admin_Order {
 	 * @return void
 	 */
 	public function render_bulk_action_notice(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading redirect args for admin notice output.
 		if ( ! isset( $_REQUEST['wbdpp_bulk_action'] ) ) {
 			return;
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading redirect args for admin notice output.
 		$action = sanitize_text_field( wp_unslash( $_REQUEST['wbdpp_bulk_action'] ) );
 		if ( 'cancel_overdue' !== $action ) {
 			return;
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading redirect args for admin notice output.
 		$count = isset( $_REQUEST['wbdpp_cancelled'] ) ? absint( wp_unslash( $_REQUEST['wbdpp_cancelled'] ) ) : 0;
 
 		echo '<div class="notice notice-success is-dismissible"><p>';

@@ -39,8 +39,6 @@ final class Plugin {
 			return;
 		}
 
-		load_plugin_textdomain( 'wb-deposits-partial-payments-for-woocommerce', false, dirname( plugin_basename( WBDPP_FILE ) ) . '/languages' );
-
 		if ( is_admin() ) {
 			add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'register_settings_page' ) );
 		}
