@@ -266,7 +266,11 @@ final class Cart {
 			return;
 		}
 
-		$cart->add_fee( esc_html__( 'Deposit coupon allocation adjustment', 'wb-deposits-partial-payments-for-woocommerce' ), (float) wc_format_decimal( $adjustment, wc_get_price_decimals() ), false );
+		$label = 'full' === $coupon_mode
+			? esc_html__( 'Discount applied to balance payment', 'wb-deposits-partial-payments-for-woocommerce' )
+			: esc_html__( 'Discount split between deposit and balance', 'wb-deposits-partial-payments-for-woocommerce' );
+
+		$cart->add_fee( $label, (float) wc_format_decimal( $adjustment, wc_get_price_decimals() ), false );
 	}
 
 	/**
